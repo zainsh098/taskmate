@@ -13,6 +13,9 @@ class _TaskAddPageState extends State<TaskAddPage> {
 
   TextEditingController timeInput = TextEditingController();
   TextEditingController dateInput = TextEditingController();
+  TextEditingController taskInput = TextEditingController();
+  TextEditingController detailInput = TextEditingController();
+
 Utils util=Utils();
 
 
@@ -47,6 +50,9 @@ Utils util=Utils();
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: TextFormField(
+
+                controller: taskInput,
+
                 decoration: const InputDecoration(
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black),
@@ -64,6 +70,9 @@ Utils util=Utils();
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: TextFormField(
+                controller: detailInput,
+
+
                 decoration: const InputDecoration(
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black),
@@ -139,26 +148,37 @@ Utils util=Utils();
                   minimumSize: MaterialStatePropertyAll(Size(200, 50)),
                 ),
                 onPressed: () async {
-                  Map<String,dynamic> userData={
+                  Map<String,dynamic> taskData={
 
-                    'Zain 1':20,
-                    'Zain 2':21,
-                    'Zain 3':22,
-                    'Zain 4':23,
-                    'Zain 5':24,
-                    'Zain 6':25,
-                    'Zain 6':26,
-                    'Zain 8':27,
+                    'taskInput':taskInput.text,
+                    'detailInput':detailInput.text,
+                    'timeInput':timeInput.text,
+                    'dateInput':dateInput.text,
+
 
                   };
 
+                  List<dynamic> taskList=taskData.values.toList();
 
-                var box=await Hive.openBox('TaskList');
+                  String uniqueKey=DateTime.now().millisecondsSinceEpoch.toString();
 
-                box.putAll(userData);
-                box.add('ahsan');
 
-                print(box.get('Zain 1'));
+
+
+
+
+
+                var box=await Hive.openBox('TaskListData');
+
+                box.put(uniqueKey, taskList);
+
+
+                setState(() {
+
+                });
+
+
+
 
 
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:taskmate/utils/routes/routes_name.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -11,90 +10,81 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-  bool
-   value=false;
-
+  bool value = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       floatingActionButton: FloatingActionButton(
-         child: Icon(Icons.add,size: 40,),
-         onPressed: () {
-           //Navigator.pushNamed(context, RoutesName.taskaddpage);
-
-
-       },),
-
-
-
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(
+          Icons.add,
+          size: 40,
+        ),
+        onPressed: () {
+          Navigator.pushNamed(context, RoutesName.taskaddpage);
+        },
+      ),
       appBar: AppBar(
         backgroundColor: Colors.blue,
         automaticallyImplyLeading: false,
-        title: Text('Task Mate',style: TextStyle(color: Colors.white,fontSize: 25,fontWeight: FontWeight.bold),),centerTitle: true,),
-          body: Column(
-            children: [
-              SizedBox(height: 20,),
+        title: const Text(
+          'Task Mate',
+          style: TextStyle(
+              color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
+      body: FutureBuilder(
+        future: Hive.openBox('TaskListData'),
+        builder: (context, AsyncSnapshot<Box<dynamic>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData && snapshot.data != null) {
+              List<dynamic> values = snapshot.data!.values!.toList();
+              List<dynamic> keys = snapshot.data!.keys!.toList();
+
+              return ListView.separated(
+                itemBuilder: (context, index)  {
+                  return Padding(
+                    padding: EdgeInsets.only(left: 10, right: 10),
+                    child: Card(
+                      child: ListTile(
+                        trailing: Icon(
+                          Icons.notifications,
+                          size: 30,
+                        ),
+                        title: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
 
 
+                              Text(values[index].toString()),
 
-             FutureBuilder(future: Hive.openBox('TaskList'), builder: (context, snapshot) {
-
-               return Expanded(
-                 child: ListView.separated(
-
-
-
-                     itemBuilder: (context, index) {
-
-                       return  Padding(
-                         padding: const EdgeInsets.only(left: 10,right: 10),
-                         child: Card(
-                           child: ListTile(
-                             leading: Checkbox(value: this.value, onChanged: (value) {
-                               setState(() {
-                                 this.value=value!;
-                               });
-
-                             },),
-                             trailing: Icon(Icons.notifications,size: 30,),
-
-                             title: Column(
-                               crossAxisAlignment: CrossAxisAlignment.start,
-                               children: [
-
-                                 String key=snapshot.data.keys.elementAt(index);
-                                 SizedBox(height: 10,),
-
-
-
-                               ],
-
-
-                             ),
-                           ),
-                         ),
-                       );
-
-
-                     }, separatorBuilder: (context, index) {
-                   return SizedBox(height: 1,);
-                 }, itemCount: 6),
-               );
-
-             },)
-
-
-
-
-
-
-            ],
-
-
-          ),
-
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return const SizedBox(
+                    height: 1,
+                  );
+                },
+                itemCount: values.length,
+              );
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              // Handle the case where snapshot.data is null
+              return Text('Data is null');
+            }
+          } else {
+            return CircularProgressIndicator();
+          }
+        },
+      ),
     );
   }
 }
