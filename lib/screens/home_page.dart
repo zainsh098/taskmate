@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
+
+import 'package:taskmate/provider/task_provider.dart';
 import 'package:taskmate/utils/routes/routes_name.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,8 +15,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool value = false;
 
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: const Icon(
@@ -35,20 +40,34 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
       ),
       body: FutureBuilder(
-        future: Hive.openBox('TaskListData'),
+        future: Hive.openBox('TaskListNew2'),
         builder: (context, AsyncSnapshot<Box<dynamic>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData && snapshot.data != null) {
-              List<dynamic> values = snapshot.data!.values!.toList();
-              List<dynamic> keys = snapshot.data!.keys!.toList();
+              // List<dynamic> values = snapshot.data!.values!.toList();
+              // List<dynamic> keys = snapshot.data!.keys!.toList();
+              var box = Hive.box('TaskListNew2');
+
+
+              List taskList = box.values.toList().reversed.toList();
+
+
 
               return ListView.separated(
+
                 itemBuilder: (context, index)  {
+                  var taskData1 = taskList[index];
+
                   return Padding(
                     padding: EdgeInsets.only(left: 10, right: 10),
                     child: Card(
+                      color: Colors.grey.shade100,
                       child: ListTile(
-                        trailing: Icon(
+
+
+
+
+                        trailing: const Icon(
                           Icons.notifications,
                           size: 30,
                         ),
@@ -57,8 +76,11 @@ class _HomePageState extends State<HomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
 
+                              Text('Title  :  ${taskData1[0]}',style: TextStyle(fontSize: 16),),
+                              Text('Detail : ${taskData1[1]}',style: TextStyle(fontSize: 16),),
+                              Text('Time   : ${taskData1[2]}',style: TextStyle(fontSize: 16),),
+                              Text('Date   : ${taskData1[3]}',style: TextStyle(fontSize: 16),),
 
-                              Text(values[index].toString()),
 
                             ],
                           ),
@@ -68,16 +90,18 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
                 separatorBuilder: (context, index) {
+
                   return const SizedBox(
                     height: 1,
                   );
                 },
-                itemCount: values.length,
+
+                itemCount: taskList.length,
               );
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
-              // Handle the case where snapshot.data is null
+
               return Text('Data is null');
             }
           } else {
