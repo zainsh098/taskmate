@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taskmate/screens/completed_task.dart';
+import 'package:taskmate/screens/home_page.dart';
 import 'package:taskmate/screens/splash_page.dart';
 import 'package:taskmate/screens/task_add_page.dart';
 import 'package:taskmate/utils/routes/routes_name.dart';
@@ -16,7 +17,7 @@ class Routes{
       case RoutesName.splashpage:
         return MaterialPageRoute(builder: ( BuildContext context) => const SplashPage(),);
       case RoutesName.homepage:
-        return MaterialPageRoute(builder: ( BuildContext context) => const SplashPage(),);
+        return MaterialPageRoute(builder: ( BuildContext context) => const HomePage(),);
       case RoutesName.taskaddpage:
         return MaterialPageRoute(builder: ( BuildContext context) => const TaskAddPage(),);
       case RoutesName.completedpage:
