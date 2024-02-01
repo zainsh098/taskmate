@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:taskmate/maps.dart';
+import 'package:taskmate/provider/task_provider.dart';
 import 'package:taskmate/screens/home_page.dart';
 
 import 'package:taskmate/screens/task_add_page.dart';
+import 'package:taskmate/utils/routes/routes.dart';
+import 'package:taskmate/utils/routes/routes_name.dart';
 
 void main() async{
 
@@ -22,7 +26,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_)=>DateProvider()),
+      ChangeNotifierProvider(create: (_)=>TimeProvider()),
+      ChangeNotifierProvider(create: (_)=>TaskProvider()),
+
+
+
+
+    ],child: MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'TaskMate',
       theme: ThemeData(
@@ -30,8 +42,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const HomePage()
-    );
+      initialRoute: RoutesName.splashpage,
+      onGenerateRoute:Routes.generateRoute,
+    ),);
   }
 }
 
